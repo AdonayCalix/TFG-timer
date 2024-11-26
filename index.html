@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cuenta Regresiva</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #1a202c, #2d3748);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .flip-card {
+      perspective: 600px;
+    }
+
+    .flip-inner {
+      width: 80px;
+      height: 100px;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .flip-inner.flip {
+      transform: rotateX(-180deg);
+    }
+
+    .flip-front,
+    .flip-back {
+      position: absolute;
+      backface-visibility: hidden;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #2d3748;
+      border: 1px solid #4a5568;
+      border-radius: 8px;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .flip-back {
+      transform: rotateX(180deg);
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="text-center text-white">
+    <h1 class="text-4xl font-bold mb-8">Cuenta regresiva para finalizar TFG</h1>
+    <h5 class="text-xl font-bold mb-8">Fecha Limite: 15/12/2024</h1>
+    <div class="flex gap-4 justify-center">
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">{{ days }}</div>
+          <div class="flip-back">{{ days }}</div>
+        </div>
+        <p class="mt-2 text-sm uppercase">Dias</p>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">{{ hours }}</div>
+          <div class="flip-back">{{ hours }}</div>
+        </div>
+        <p class="mt-2 text-sm uppercase">Horas</p>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">{{ minutes }}</div>
+          <div class="flip-back">{{ minutes }}</div>
+        </div>
+        <p class="mt-2 text-sm uppercase">Minutos</p>
+      </div>
+
+      <div class="flip-card">
+        <div class="flip-inner">
+          <div class="flip-front">{{ seconds }}</div>
+          <div class="flip-back">{{ seconds }}</div>
+        </div>
+        <p class="mt-2 text-sm uppercase">Segundos</p>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: center; align-items: center; text-align: center; height: 100%;">
+      <img 
+        src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" 
+        alt="Gatos celebrando" 
+        class="mt-8 w-64 rounded-lg"
+      />
+    </div>
+    
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          days: "00",
+          hours: "00",
+          minutes: "00",
+          seconds: "00",
+          targetDate: new Date("2024-12-15T00:00:00").getTime(),
+        };
+      },
+      methods: {
+        calculateTime() {
+          const now = new Date().getTime();
+          const distance = this.targetDate - now;
+
+          if (distance <= 0) {
+            this.days = "00";
+            this.hours = "00";
+            this.minutes = "00";
+            this.seconds = "00";
+            return;
+          }
+
+          this.days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, "0");
+          this.hours = String(
+            Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+          ).padStart(2, "0");
+          this.minutes = String(
+            Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+          ).padStart(2, "0");
+          this.seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, "0");
+        },
+      },
+      mounted() {
+        this.calculateTime();
+        setInterval(this.calculateTime, 1000);
+      },
+    }).mount("#app");
+  </script>
+</body>
+</html>
